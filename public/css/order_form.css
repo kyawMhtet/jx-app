@@ -1,0 +1,268 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(242,245,248);
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+@media screen and (max-width: 576px) {
+  .detail {
+    padding: 10px;
+    background-color: white;
+  }
+  
+  .detail  div{
+    display: flex;
+    margin: 8px 0;
+    align-items: center;
+    /* justify-content: end; */
+  }
+
+  .detail span {
+    font-size: 15px;
+    margin-left: 5px;
+  }
+
+
+  small {
+    margin-left: 5px;
+    background-color: rgb(225, 223, 223);
+    color: black;
+    font-weight: bold;
+    padding: 3px 5px;
+    border-radius: 5px;
+  }
+  
+  
+  table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      /* border: none; */
+      font-size: 15px;
+      border: 1px solid #dddddd;
+      width: 100%;
+    }
+    
+    td, th {
+      /* border: 1px solid #dddddd; */
+      text-align: left;
+      font-weight: 400;
+      padding: 8px;
+    }
+  
+    th {
+      color:rgb(20, 188, 132);
+    }
+    
+    tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+  
+  
+    .forms {
+      margin-top: -10px;
+      display: flex;
+      padding: 5px;
+      justify-content: space-between;
+    }
+  
+    .forms > div {
+      flex: 1;
+      margin-right: 10px;
+    }
+  
+  .forms > div:last-child {
+      margin-right: 0;
+  }
+  
+  label {
+      display: block;
+      margin-bottom: 8px;
+      padding: 3px 8px;
+  }
+  
+  .label {
+      padding: 3px 10px;
+  }
+  
+  .forms input {
+      min-width: 92%;
+      padding: 5px;
+      font-size: 16px;
+      color: #999999; 
+      font-weight: normal; 
+      height: 30px; 
+      box-sizing: border-box;
+      border: 1px solid #999999;
+      display: block;
+      margin: auto;
+  }
+
+  input, textarea, select {
+    border-radius: 5px;
+
+  }
+  
+  .amount {
+      padding: 5px;
+  }
+  
+  .amount input {
+      width: 95%;
+      display: block;
+      margin: auto;
+      font-size: 16px;
+      height: 30px;
+      border: 1px solid #cccccc;
+  }
+  
+  .amount > div {
+      margin-top: -5px;
+  }
+  
+  textarea {
+      width: 95%;
+      display: block;
+      margin: auto;
+      font-size: 16px;
+      border: 1px solid #cccccc;
+  }
+    
+  
+  
+    .selectdiv {
+      position: relative;
+      
+      float: left;
+      /* min-width: 200px; */
+      width: 100%;
+      /* margin: 50px 33%; */
+    }
+    
+    select::-ms-expand {
+    display: none;
+    }
+    
+    .selectdiv:after {
+      content: '<>';
+      font: 17px ;
+      color: #333;
+      -webkit-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      transform: rotate(90deg);
+      right: 11px;
+      
+      top: 12px;
+      padding: 0 0 2px;
+      border-bottom: 1px solid #999;
+      
+      position: absolute;
+      pointer-events: none;
+    }
+    
+    .selectdiv select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      
+      display: block;
+      width: 100%;
+      height: 30px;
+      float: right;
+      margin: 5px 0px;
+      padding: 5px;
+      font-size: 13px;
+      /* line-height: 1.75; */
+      color: #333;
+      background-color: #ffffff;
+      background-image: none;
+      border: 1px solid #cccccc;
+      /* -ms-word-break: normal; */
+      /* word-break: normal; */
+    }
+  
+  
+    /* html, body {
+    height: 100%;
+  }
+  
+  body {
+    display: grid;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    color: #223254;
+  } */
+  
+  .checkbox {
+      margin-top: 40px;
+      padding: 0 14px;
+  }
+  
+  .checkbox > label {
+      display: block;
+      padding-left: 20px;
+      text-indent: -20px;
+      font-size: 13px;
+  }
+  
+  /* .checkbox > label > span {
+    margin-left: 1px;
+  } */
+  
+  .checkbox > input {
+      width: 13px;
+      height: 13px;
+      padding: 0;
+      margin:0;
+      vertical-align: bottom;
+      position: relative;
+      overflow: hidden;
+  }
+  
+  
+  /* button */
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 15px;
+    /* align-items: center; */
+  }
+  
+  .btn1, .btn2 {
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid black;
+    transition: all 0.2s;
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  .btn1 {
+    width: 100%;
+    background-color: white;
+
+  }
+  
+  .btn2 {
+    width: 50%;
+    background-color: black;
+    color: white;
+  }
+  
+  /* .btn1:hover {
+    background-color: black;
+  }
+
+  .btn2:hover {
+    background-color: white;
+  } */
+  
+}
