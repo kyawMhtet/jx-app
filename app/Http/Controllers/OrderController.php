@@ -35,7 +35,7 @@ class OrderController extends Controller
         return view('item_detail', compact('item'));
     }
 
-    // 
+    //
     public function orderForm($id)
     {
         $item = Item::find($id);
@@ -83,7 +83,7 @@ class OrderController extends Controller
 
             $order_id = $order->id;
 
-            // update customer info 
+            // update customer info
             if ($request->customer_info) {
                 $customer = Customer::where('id', $request->customer_id)->first();
                 // return $customer->id;
