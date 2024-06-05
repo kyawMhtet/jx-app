@@ -25,7 +25,7 @@
 
       <div class="info">
         <h3>Confirmation Detail</h3>
-        
+
         <hr>
 
         <div>
@@ -65,9 +65,9 @@
     </div>
 
 
-    
+
   </div>
-      
-      
+
+
 </body>
 </html>
