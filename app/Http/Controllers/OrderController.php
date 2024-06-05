@@ -32,7 +32,6 @@ class OrderController extends Controller
     {
         // return $id;
         $item = Item::find($id);
-        // return $item;
         return view('item_detail', compact('item'));
     }
 
@@ -40,7 +39,7 @@ class OrderController extends Controller
     public function orderForm($id)
     {
         $item = Item::find($id);
-        // dd($item);
+
         $customer = Customer::where('id', 22)->first();
         return view('order_form', compact('item', 'customer'));
     }
@@ -94,17 +93,10 @@ class OrderController extends Controller
                     'email' => $request->email,
                     'branch_id' => $order->branch_id,
                 ]);
-
-                // return $customer;
             }
-
-            // return $customer;
-
-
 
             Log::info('Order created successfully');
 
-            // return 
             return redirect()->route('confirm#detail', $order_id);
         } catch (\Throwable $th) {
             Log::error("error creating order");

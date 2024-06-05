@@ -9,9 +9,10 @@
     <link rel="stylesheet" href="{{ asset('css/order_form.css') }}">
 </head>
 <body>
-    
-<div class="container">
 
+<div class="container">
+    <form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
+        @csrf
     <div class="detail">
         <div>
             <h4>Order</h4>
@@ -27,11 +28,11 @@
             <h5>Timestamp : </h5>
             <span>02/05/2024</span>
         </div>
-        
+
     </div>
 
-<form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
-    @csrf
+
+    {{-- @csrf --}}
     <table>
         <tr>
             <th>#</th>
@@ -60,6 +61,7 @@
         <tr>
             <td></td>
             <td>Total</td>
+            <td></td>
             <td colspan="2">
                 {{ 1*5000 }} Ks
             </td>
@@ -69,17 +71,17 @@
     {{-- <input type="hidden" name="item_name" value="{{ $item->item_name }}" id="hidden-item-name"> --}}
     <input type="hidden" name="item_count" value="1">
     <input type="hidden" name="total_price" value="{{ 1*5000 }}">
-    <input type="hidden" name="customer_id" value="{{ $customer->id }}"> 
+    <input type="hidden" name="customer_id" value="{{ $customer->id }}">
 
 
     <div>
         {{-- <label for="" class="label">Transfer Time</label>
         <div class="forms">
-            
+
             <div class="date">
                 <input type="date" value="2023-04-22">
             </div>
-    
+
             <div class="time">
                 <input type="time">
             </div>
@@ -158,7 +160,7 @@
 </form>
 
 
-    
+
   </div>
 
 
@@ -175,6 +177,19 @@
             orderForm.action = "{{ route('user#checkout') }}";
         });
     });
+
+    // document.addEventListener('DOMContentLoaded', async() => {
+    //     try {
+    //         const response = await fetch('http://127.0.0.1:8000/api/orders/3', {
+    //                 method: "GET",
+    //                 headers: {
+    //                     "Content-type" : "application/json; charset=UTF-8"
+    //                 }
+    //             });
+    //     } catch (error) {
+
+    //     }
+    // })
 </script>
 
 

@@ -164,7 +164,6 @@ body {
 @media screen and (max-width: 576px) {
     .info h3 {
         text-align: center;
-        /* margin-top: 15px; */
     }
 
     hr {
