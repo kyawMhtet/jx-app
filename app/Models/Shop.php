@@ -2,31 +2,29 @@
 
 namespace App\Models;
 
-use App\Models\Shop;
+use App\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Branch extends Model
+class Shop extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'shop_id',
+        'user_id',
         'img',
-        'branch_name',
+        'name',
         'phone',
         'address',
         'email',
         'formed_date',
-        'is_default',
-        'manager_id',
         'status',
         'created_by',
         'updated_by'
     ];
 
-    public function shop()
+    public function branch()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->hasMany(Branch::class);
     }
 }

@@ -21,12 +21,14 @@
 
         <div>
             <h5>Facebook Name : </h5>
-            <span> {{ $customer->acc_name }} </span>
+            <span> {{ $customer->customer_name }} </span>
         </div>
 
         <div>
             <h5>Timestamp : </h5>
-            <span>02/05/2024</span>
+            <span>
+                {{ $currentDate }}
+            </span>
         </div>
 
     </div>
@@ -42,9 +44,9 @@
         </tr>
         <tr>
             <td>1</td>
-          <td>{{ $item->item_name }}</td>
+          <td>{{ $item->sub_item_name }}</td>
           <td>1</td>
-          <td>5000 Ks</td>
+          <td>{{ $item->price }} Ks</td>
         </tr>
         <tr>
             <td></td>
@@ -60,18 +62,31 @@
         </tr>
         <tr>
             <td></td>
-            <td>Total</td>
+            <td>Tax</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <b>Total</b>
+            </td>
             <td></td>
             <td colspan="2">
-                {{ 1*5000 }} Ks
+                <b>
+                    {{ 1*$item->price }} Ks
+                </b>
             </td>
         </tr>
     </table>
 
     {{-- <input type="hidden" name="item_name" value="{{ $item->item_name }}" id="hidden-item-name"> --}}
     <input type="hidden" name="item_count" value="1">
-    <input type="hidden" name="total_price" value="{{ 1*5000 }}">
+    <input type="hidden" name="total_price" value="{{ 1*$item->price }}">
     <input type="hidden" name="customer_id" value="{{ $customer->id }}">
+    <input type="hidden" name="branch_id" value="{{ $item->branch_id }}">
+    <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
+    <input type="hidden" name="item_id" value="{{ $item->id }}">
 
 
     <div>
@@ -116,6 +131,13 @@
             </div>
         </div>
 
+        <div class="amount">
+            <label for="">Note (optional) </label>
+            <div class="">
+                <textarea name="note" style="" id="" cols="" rows="2"></textarea>
+            </div>
+        </div>
+
 
         <div class="amount">
             <div class="selectdiv">
@@ -129,6 +151,9 @@
               </div>
         </div>
 
+
+
+
         <div class="checkbox">
             <label><input type="checkbox" name="customer_info"/>
             <span>
@@ -141,12 +166,7 @@
     </div>
 
 
-    {{-- <div class="checkbox">
 
-
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-            <span for="vehicle1"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, repellat.</span><br>
-    </div> --}}
     <div class="buttons">
         <button class="btn1" id="continueShopping" type="submit">
             Continue Shopping

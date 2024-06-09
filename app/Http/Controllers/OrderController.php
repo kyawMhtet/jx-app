@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Item;
+use App\Models\Shop;
 use App\Models\Order;
 use App\Models\Branch;
+use App\Models\SubItem;
+use App\Models\Campaign;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CreateOrderRequest;
-use App\Models\Customer;
 
 class OrderController extends Controller
 {
@@ -28,20 +32,41 @@ class OrderController extends Controller
         return $randomString;
     }
 
-    public function detail($id)
+    public function detail(Request $request)
     {
-        // return $id;
-        $item = Item::find($id);
-        return view('item_detail', compact('item'));
+        try {
+            $customer = Customer::where('id', $request->sid)->first();
+
+            $item = SubItem::where('id', $request->siid)->first();
+
+
+
+            $branch = Branch::findOrFail($item->branch_id);
+            $shop = Shop::findOrFail($branch->shop_id);
+
+            $item_desc = Item::findOrFail($item->item_id);
+
+
+            return view('item_detail', compact('item', 'customer', 'shop', 'item_desc'));
+        } catch (\Throwable $th) {
+            //throw $th;
+            Log::error("error item detail");
+        }
     }
 
     //
-    public function orderForm($id)
+    public function orderForm(Request $request)
     {
-        $item = Item::find($id);
 
-        $customer = Customer::where('id', 22)->first();
-        return view('order_form', compact('item', 'customer'));
+        $customer = Customer::where('id', $request->sid)->first();
+        // return $customer;
+        $campaign = Campaign::where('id', $request->cid)->first();
+        // dd($campaign);
+        $item = SubItem::where('id', $request->iid)->first();
+
+        $currentDate = Carbon::now()->format('d/m/Y');
+
+        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate'));
     }
 
 
@@ -49,7 +74,6 @@ class OrderController extends Controller
     public function userOrderCreate(Request $request)
     {
         // dd($request->all());
-        // dd($request->customer_info);
 
         try {
             $status = 'new_order';
@@ -60,23 +84,19 @@ class OrderController extends Controller
             // dd($status);
             $order = Order::create([
                 'order_number' => $this->generateOrderNumber(),
-                'branch_id'    => 2,
-                'campaign_id'  => 0,
-                'customer_id'  => 2,
+                'branch_id'    => $request->branch_id,
+                'campaign_id'  => $request->campaign_id,
+                'customer_id'  => $request->customer_id,
                 'item_count'  => $request->item_count,
                 'payment_method' => $request->payment,
                 'discount' => 0,
                 'tax' => 0,
-                'sub_total'    => 0,
+                'sub_total'    => $request->total_price,
                 'total'        => $request->total_price,
                 "name"           => $request->name,
                 "phone"          => $request->phone,
                 "address"        => $request->address,
-                "note"           => null,
-                "delivery_date" => null,
-                "delivery_name" => null,
-                "delivery_address" => null,
-                "delivery_phone" => null,
+                "note"           => $request->note,
                 "status"         => $status,
                 "order_date"     => date('Y-m-d')
             ]);
@@ -86,18 +106,19 @@ class OrderController extends Controller
             // update customer info
             if ($request->customer_info) {
                 $customer = Customer::where('id', $request->customer_id)->first();
-                // return $customer->id;
                 $customer->update([
-                    'customer_name' => $request->name,
-                    'phone' => $request->phone,
-                    'email' => $request->email,
-                    'branch_id' => $order->branch_id,
+                    'delivery_name' => $request->name,
+                    'delivery_contact' => $request->phone,
+                    'delivery_address' => $request->address
                 ]);
             }
 
             Log::info('Order created successfully');
 
-            return redirect()->route('confirm#detail', $order_id);
+            return redirect()->route('confirm#detail', [
+                'sid' => $request->customer_id,
+                'oid' => $order_id
+            ]);
         } catch (\Throwable $th) {
             Log::error("error creating order");
         }
@@ -106,13 +127,21 @@ class OrderController extends Controller
 
 
     // confirmation detail
-    public function confirmationDetail($id)
+    public function confirmationDetail(Request $request)
     {
-        // return $id;
-        $detail = Order::where('id', $id)->first();
-        // return $detail;
-        $branch = Branch::where('id', $detail->branch_id)->first();
+        try {
+            $customer = Customer::where('id', $request->sid)->first();
 
-        return view('confirmation_detail', compact('detail', 'branch'));
+            $order = Order::findOrFail($request->oid);
+
+            $branch = Branch::findOrFail($order->branch_id);
+
+            $shop = Shop::findOrFail($branch->shop_id);
+
+            return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop'));
+        } catch (\Throwable $th) {
+            //throw $th;
+            Log::error('errorConfirmDetail');
+        }
     }
 }

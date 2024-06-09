@@ -33,7 +33,7 @@
             <div class="seller_info">
                 <img src="https://scontent.fbkk8-2.fna.fbcdn.net/v/t39.30808-6/302693478_390123153276794_3073543938523926457_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=CHV9CMIAF6QQ7kNvgGskeD_&_nc_ht=scontent.fbkk8-2.fna&oh=00_AYAHJ6cRu8h379X9MIbn9CU_RcjqhN7dr3UvgATdoZULSg&oe=665F37AE" alt="">
 
-                <h4>{{ $branch->branch_name }}</h4>
+                <h4>{{ $shop->name }}</h4>
             </div>
         </div>
 
@@ -44,7 +44,7 @@
             <div>
                 <p>Status</p>
 
-                <small>You've confirmed that you'll pay by {{ $detail->payment_method }}.</small>
+                <small>You've confirmed that you'll pay by {{ $order->payment_method }}.</small>
             </div>
         </div>
       </div>

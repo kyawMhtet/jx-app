@@ -22,6 +22,9 @@ class Customer extends Model
         'email',
         'phone',
         'shipping_address',
+        'delivery_name',
+        'delivery_address',
+        'delivery_contact',
         'contact',
         'profile_pic_url',
         'status'
