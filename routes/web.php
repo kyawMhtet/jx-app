@@ -15,4 +15,4 @@ Route::post('/order/checkout', [OrderController::class, 'userOrderCreate'])->nam
 Route::get('/confirmation', [OrderController::class, 'confirmationDetail'])->name('confirm#detail');
 
 
-//test
+
