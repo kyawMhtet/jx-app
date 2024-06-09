@@ -21,4 +21,4 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan 159.223.71.240 >> ~/.ssh/known_hosts
-          ssh root@159.223.71.240 "cd /var/www/html/megajx/live/webview/jx-app && git pull origin master && php artisan migrate --force && php artisan cache:clear && php artisan config:cache && php artisan route:cache"
+          ssh root@159.223.71.240 "cd /var/www/html/megajx/live/webview/jx-app && git pull origin master && php artisan cache:clear && php artisan config:cache && php artisan route:cache"
