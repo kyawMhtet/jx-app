@@ -39,8 +39,6 @@ class OrderController extends Controller
 
             $item = SubItem::where('id', $request->siid)->first();
 
-
-
             $branch = Branch::findOrFail($item->branch_id);
             $shop = Shop::findOrFail($branch->shop_id);
 
@@ -58,7 +56,7 @@ class OrderController extends Controller
     public function orderForm(Request $request)
     {
 
-        $customer = Customer::where('id', $request->sid)->first();
+        $customer = Customer::where('channel_customer_id', $request->sid)->first();
         // return $customer;
         $campaign = Campaign::where('id', $request->cid)->first();
         // dd($campaign);
@@ -130,9 +128,9 @@ class OrderController extends Controller
     public function confirmationDetail(Request $request)
     {
         try {
-            $customer = Customer::where('id', $request->sid)->first();
+            $customer = Customer::where('channel_customer_id', $request->sid)->first();
 
-            $order = Order::findOrFail($request->oid);
+            $order = Order::findOrFail($request->od);
 
             $branch = Branch::findOrFail($order->branch_id);
 

@@ -13,6 +13,3 @@ Route::get('/item-detail',  [OrderController::class, 'detail'])->name('itemDetai
 Route::get('/order', [OrderController::class, 'orderForm'])->name('order');
 Route::post('/order/checkout', [OrderController::class, 'userOrderCreate'])->name('user#checkout');
 Route::get('/confirmation', [OrderController::class, 'confirmationDetail'])->name('confirm#detail');
-
-
-
