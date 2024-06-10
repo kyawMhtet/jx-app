@@ -114,8 +114,8 @@ class OrderController extends Controller
             Log::info('Order created successfully');
 
             return redirect()->route('confirm#detail', [
-                'sid' => $request->customer_id,
-                'oid' => $order_id
+                'sid' => $request->channel_customer_id,
+                'od' => $order_id
             ]);
         } catch (\Throwable $th) {
             Log::error("error creating order");

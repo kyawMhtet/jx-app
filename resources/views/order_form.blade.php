@@ -84,6 +84,7 @@
     <input type="hidden" name="item_count" value="1">
     <input type="hidden" name="total_price" value="{{ 1*$item->price }}">
     <input type="hidden" name="customer_id" value="{{ $customer->id }}">
+    <input type="hidden" name="channel_customer_id" value="{{ $customer->channel_customer_id }}">
     <input type="hidden" name="branch_id" value="{{ $item->branch_id }}">
     <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
     <input type="hidden" name="item_id" value="{{ $item->id }}">
