@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CreateOrderRequest;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -57,7 +58,7 @@ class OrderController extends Controller
     {
 
         $customer = Customer::where('channel_customer_id', $request->sid)->first();
-        // return $customer;
+
         $campaign = Campaign::where('id', $request->cid)->first();
         // dd($campaign);
         $item = SubItem::where('id', $request->iid)->first();
@@ -74,6 +75,13 @@ class OrderController extends Controller
         // dd($request->all());
 
         try {
+
+            $validation = $this->validation($request);
+            if ($validation->fails()) {
+                return redirect()->back()->withErrors($validation)->withInput();
+            }
+
+
             $status = 'new_order';
             if ($request->payment == 'Paid') $status = 'placed_order';
             else if ($request->payment == 'COD') $status = 'placed_order';
@@ -141,5 +149,22 @@ class OrderController extends Controller
             //throw $th;
             Log::error('errorConfirmDetail');
         }
+    }
+
+
+    // validation
+    private function validation($request)
+    {
+        return Validator::make($request->all(), [
+            // 'branch_id'    => 'required',
+            // 'campaign_id'  => 'required',
+            // 'customer_id'  => 'required',
+            // 'payment_method' => 'required',
+            // 'discount' => 0,
+            // 'tax' => 0,
+            "name"           => 'required',
+            "phone"          => 'required',
+            "address"        => 'required',
+        ]);
     }
 }

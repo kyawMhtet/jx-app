@@ -11,6 +11,17 @@
 <body>
 
 <div class="container">
+    {{-- @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+
+    @endif --}}
+
     <form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
         @csrf
     <div class="detail">
@@ -112,30 +123,48 @@
         </div> --}}
 
         <div class="amount">
-            <label for="">Name </label>
+            <label for="" class="@error('name')
+                    name-label-invalid
+                @enderror"">Name </label>
             <div class="">
-                <input type="text" name="name">
+                <input type="text" name="name" class="@error('name')
+                    name-invalid
+                @enderror">
+                {{-- @error('name')
+                <small class="invalid-feedback">
+                    {{ $message }}
+                </small>
+            @enderror --}}
             </div>
         </div>
 
         <div class="amount">
-            <label for="">Phone</label>
+            <label for="" class="@error('phone')
+                phone-label-invalid
+            @enderror" >Phone</label>
             <div class="">
-                <input type="text" name="phone">
+                <input type="text" name="phone" class="@error('phone')
+                    phone-invalid
+                @enderror">
+
             </div>
         </div>
 
         <div class="amount">
-            <label for="">Address</label>
+            <label for="" class="@error('address')
+                address-label-invalid
+            @enderror">Address</label>
             <div class="">
-                <textarea name="address" style="" id="" cols="" rows="3"></textarea>
+                <textarea name="address" id="" cols="" rows="3" class="@error('address')
+                    address-invalid
+                @enderror"></textarea>
             </div>
         </div>
 
         <div class="amount">
             <label for="">Note (optional) </label>
             <div class="">
-                <textarea name="note" style="" id="" cols="" rows="2"></textarea>
+                <textarea name="note" id="" cols="" rows="2"></textarea>
             </div>
         </div>
 
@@ -169,7 +198,7 @@
 
 
     <div class="buttons">
-        <button class="btn1" id="continueShopping" type="submit">
+        <button class="btn1" id="continueShopping" type="button">
             Continue Shopping
         </button>
 
@@ -180,13 +209,7 @@
 
 </form>
 
-
-
   </div>
-
-
-
-
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -197,20 +220,33 @@
         checkOutButton.addEventListener('click', function (e) {
             orderForm.action = "{{ route('user#checkout') }}";
         });
+
+        continueShoppingButton.addEventListener('click', function() {
+            window.location.href = 'fb://page/102089854919616';
+
+            setTimeout(() => {
+                window.location.href = 'https://www.facebook.com/twoofficialpage/'
+            }, 1000);
+        });
     });
 
-    // document.addEventListener('DOMContentLoaded', async() => {
-    //     try {
-    //         const response = await fetch('http://127.0.0.1:8000/api/orders/3', {
-    //                 method: "GET",
-    //                 headers: {
-    //                     "Content-type" : "application/json; charset=UTF-8"
-    //                 }
-    //             });
-    //     } catch (error) {
 
-    //     }
-    // })
+
+    function removeErrorClass(event) {
+        event.target.classList.remove('name-invalid', 'phone-invalid', 'address-invalid');
+        const label = event.target.closest('.amount').querySelector('label');
+        label.classList.remove('name-label-invalid', 'phone-label-invalid', 'address-label-invalid');
+    }
+
+    // Add event listeners to inputs
+    const nameInput = document.querySelector('input[name="name"]');
+    const phoneInput = document.querySelector('input[name="phone"]');
+    const addressInput = document.querySelector('textarea[name="address"]');
+
+    nameInput.addEventListener('input', removeErrorClass);
+    phoneInput.addEventListener('input', removeErrorClass);
+    addressInput.addEventListener('input', removeErrorClass);
+
 </script>
 
 

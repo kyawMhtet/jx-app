@@ -44,7 +44,7 @@
             <div>
                 <p>Status</p>
 
-                <small>You've confirmed that you'll pay by {{ $order->payment_method }}.</small>
+                <small>{{ $order->status }}.</small>
             </div>
         </div>
       </div>
