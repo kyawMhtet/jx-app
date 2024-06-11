@@ -93,6 +93,7 @@
 
     {{-- <input type="hidden" name="item_name" value="{{ $item->item_name }}" id="hidden-item-name"> --}}
     <input type="hidden" name="item_count" value="1">
+    <input type="hidden" name="item_price" value="{{ $item->price }}">
     <input type="hidden" name="total_price" value="{{ 1*$item->price }}">
     <input type="hidden" name="customer_id" value="{{ $customer->id }}">
     <input type="hidden" name="channel_customer_id" value="{{ $customer->channel_customer_id }}">

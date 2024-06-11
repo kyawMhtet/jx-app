@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\CreateOrderRequest;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -74,6 +75,7 @@ class OrderController extends Controller
     {
         // dd($request->all());
 
+        // return $request->item_id;
         try {
 
             $validation = $this->validation($request);
@@ -97,7 +99,7 @@ class OrderController extends Controller
                 'payment_method' => $request->payment,
                 'discount' => 0,
                 'tax' => 0,
-                'sub_total'    => $request->total_price,
+                'sub_total'    => $request->item_price,
                 'total'        => $request->total_price,
                 "name"           => $request->name,
                 "phone"          => $request->phone,
@@ -109,6 +111,10 @@ class OrderController extends Controller
 
             $order_id = $order->id;
 
+
+            // dd($order);
+            // dd($order_id);
+            // return $order_id;
             // update customer info
             if ($request->customer_info) {
                 $customer = Customer::where('id', $request->customer_id)->first();
@@ -119,6 +125,22 @@ class OrderController extends Controller
                 ]);
             }
 
+            // dd($order->item_id);
+            OrderDetail::create([
+                'order_id' => $order_id,
+                'item_id' => $request->item_id,
+                'price' => $request->item_price,
+                'quantity' => $request->item_count,
+                'amount' => $request->total_price
+            ]);
+
+
+
+            $subitem = SubItem::findOrFail($request->item_id);
+            $updateStock = $subitem->stock - $request->item_count;
+            $subitem->stock = $updateStock;
+            $subitem->save();
+
             Log::info('Order created successfully');
 
             return redirect()->route('confirm#detail', [
@@ -126,6 +148,7 @@ class OrderController extends Controller
                 'od' => $order_id
             ]);
         } catch (\Throwable $th) {
+            // dd($th);
             Log::error("error creating order");
         }
     }
@@ -135,16 +158,22 @@ class OrderController extends Controller
     // confirmation detail
     public function confirmationDetail(Request $request)
     {
+
+        // dd($request->all());
         try {
             $customer = Customer::where('channel_customer_id', $request->sid)->first();
 
-            $order = Order::findOrFail($request->od);
-
+            $order = Order::where('id', $request->od)->with('order_detail')->first();
+            // return $order;
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
 
-            return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop'));
+            $subItems = SubItem::whereIn('id', $order->order_detail->pluck('item_id'))->get()->keyBy('id');
+            // return $subItems;
+
+
+            return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems'));
         } catch (\Throwable $th) {
             //throw $th;
             Log::error('errorConfirmDetail');

@@ -47,20 +47,60 @@
                 <small>{{ $order->status }}.</small>
             </div>
         </div>
+
+
+        <hr>
+        <div class="payment">
+          <div>
+              <p>Updated at</p>
+
+              <small>29 April 2024, 15:57</small>
+          </div>
+      </div>
       </div>
 
-      <hr>
-      <div class="payment">
-        <div>
-            <p>Updated at</p>
+    <div class="lists">
+        {{-- <h4>Order Item List</h4> --}}
+        @foreach ($subItems as $subitem)
+        <div class="item-list">
+            <img src="{{ $subitem->image_url }}" alt="">
 
-            <small>29 April 2024, 15:57</small>
+            <div class="">
+                <p class="name">
+                    {{ $subitem->sub_item_name }}
+                </p>
+
+                <div class="item-amount">
+                        <p>
+                            {{ $subitem->price }} Ks
+                        </p>
+
+                        <span>
+                            Qty: 1
+                        </span>
+
+
+                </div>
+            </div>
         </div>
-    </div>
+        @endforeach
+                {{-- @foreach($order->order_detail as $detail)
 
-    <hr>
-    <div class="payment">
-        <h4>Order Item List</h4>
+
+
+
+                        @if(!$loop->last)
+                        <hr>
+                    @endif
+                @endforeach --}}
+
+
+        {{-- <h2>Branch Information</h2>
+        <p>Branch Name: {{ $branch->name }}</p>
+
+        <h2>Shop Information</h2>
+        <p>Shop Name: {{ $shop->name }}</p> --}}
+    </div>
 
     </div>
 

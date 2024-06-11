@@ -10,7 +10,7 @@ class OrderDetail extends Model
 {
     use HasFactory;
 
-    // protected $guarded = [];
+    // protected $guarded = [s];
     protected $fillable = [
         'item_id',
         'order_id',
