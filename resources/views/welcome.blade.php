@@ -8,7 +8,6 @@
 
     <script src="https://connect.facebook.net/en_US/messenger.Extensions.js"></script>
 
-
     <link rel="stylesheet" href="{{ asset('css/confirm_detail.css') }}">
 </head>
 <body>
@@ -81,13 +80,9 @@
     </div>
 
     <button class="btn" onclick="closeBtn()" >
-        Confirm Order
+        Confirm
     </button>
 </form>
-
-
-
-
 
 
 <script>
@@ -101,13 +96,13 @@
     });
 
     function closeBtn() {
-
             MessengerExtensions.requestCloseBrowser(function success() {
+                alert('webview closed');
                 console.log("Webview closed");
             }, function error(err) {
+                alert(err);
                 console.error("Error closing webview: ", err);
             });
-
     }
 
 </script>
