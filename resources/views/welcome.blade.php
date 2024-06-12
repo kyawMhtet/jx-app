@@ -6,7 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Confirmation Detail</title>
 
-    <script src="https://connect.facebook.net/en_US/messenger.Extensions.js"></script>
+    {{-- <script src="https://connect.facebook.net/en_US/messenger.Extensions.js"></script> --}}
+
+    <script>
+      if(location.search.includes("www.facebook.com") || location.search.includes("www.messenger.com")){
+
+        console.log("Skipp messenger SDK");
+
+      }else{
+        (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'Messenger'));
+      }
+    </script>
+
+
 
     <link rel="stylesheet" href="{{ asset('css/confirm_detail.css') }}">
 </head>
