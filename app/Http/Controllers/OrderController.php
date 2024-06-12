@@ -164,7 +164,7 @@ class OrderController extends Controller
             $customer = Customer::where('channel_customer_id', $request->sid)->first();
 
             $order = Order::where('id', $request->od)->with('order_detail')->first();
-            // return $order;
+            // return $order->id;
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
@@ -178,6 +178,37 @@ class OrderController extends Controller
             //throw $th;
             Log::error('errorConfirmDetail');
         }
+    }
+
+
+
+    // confirm order
+    public function confirmOrder(Request $request)
+    {
+        // return $request->all();
+        // return $data;
+        try {
+            $data = Order::findOrFail($request->order_id);
+            // return $data;
+            $data->update([
+                'status' => 'Checkout'
+            ]);
+
+            return 'success';
+            // return redirect()->route('order#confirmed');
+            // return response()->json(['message' => 'Order confirmed successfully'], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th);
+            Log::error('error update confirm order status');
+        }
+    }
+
+
+    // order confirmed page
+    public function orderConfirmed()
+    {
+        return view('order_confirmed');
     }
 
 
