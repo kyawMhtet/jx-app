@@ -14,10 +14,10 @@
 <body>
 
 
-<form id="confirmationForm">
+<form id="confirmationForm" action="{{ route('confirm#order') }}" method="POST">
     @csrf
 
-    <input type="hidden" name="oid" value="{{ $order->id }}">
+    <input type="hidden" name="od" value="{{ $order->id }}">
 
     <div class="info">
         <h3>Confirmation Detail</h3>
@@ -82,7 +82,11 @@
         @endforeach
     </div>
 
-    <button class="btn" type="submit" onclick="closeBtn(e)" >
+    {{-- <button class="btn" type="submit" onclick="closeBtn(e)" >
+        Confirm Order
+    </button> --}}
+
+    <button class="btn" type="submit" >
         Confirm Order
     </button>
 </form>
@@ -93,29 +97,29 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        MessengerExtensions.getSupportedFeatures(function success(result) {
-            var features = result.supported_features;
-            console.log("Supported features: ", features);
-        }, function error(err) {
-            console.error("Error: ", err);
-        });
-    });
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     MessengerExtensions.getSupportedFeatures(function success(result) {
+    //         var features = result.supported_features;
+    //         console.log("Supported features: ", features);
+    //     }, function error(err) {
+    //         console.error("Error: ", err);
+    //     });
+    // });
 
-    function closeBtn(e) {
-        e.preventDefault();
-        const form = document.getElementById('confirmationForm');
+    // function closeBtn(e) {
+    //     e.preventDefault();
+    //     const form = document.getElementById('confirmationForm');
 
-        form.addEventListener('submit', function() {
-            MessengerExtensions.requestCloseBrowser(function success() {
-                console.log("Webview closed");
-            }, function error(err) {
-                console.error("Error closing webview: ", err);
-            });
-        });
+    //     form.addEventListener('submit', function() {
+    //         MessengerExtensions.requestCloseBrowser(function success() {
+    //             console.log("Webview closed");
+    //         }, function error(err) {
+    //             console.error("Error closing webview: ", err);
+    //         });
+    //     });
 
-        form.submit();
-    }
+    //     form.submit();
+    // }
 
 </script>
 

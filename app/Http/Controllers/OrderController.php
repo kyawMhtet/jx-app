@@ -64,9 +64,12 @@ class OrderController extends Controller
         // dd($campaign);
         $item = SubItem::where('id', $request->iid)->first();
 
+        $order = Order::where('id', $request->oid)->first();
+
+        // dd($order);
         $currentDate = Carbon::now()->format('d/m/Y');
 
-        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate'));
+        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate', 'order'));
     }
 
 
@@ -78,44 +81,20 @@ class OrderController extends Controller
         // return $request->item_id;
         try {
 
-            $validation = $this->validation($request);
-            if ($validation->fails()) {
-                return redirect()->back()->withErrors($validation)->withInput();
-            }
+            // $validation = $this->validation($request);
+            // if ($validation->fails()) {
+            //     return redirect()->back()->withErrors($validation)->withInput();
+            // }
 
+            // $status = 'new_order';
+            // if ($request->payment == 'Paid') $status = 'placed_order';
+            // else if ($request->payment == 'COD') $status = 'placed_order';
+            // else $status = 'confirmed_order';
 
-            $status = 'new_order';
-            if ($request->payment == 'Paid') $status = 'placed_order';
-            else if ($request->payment == 'COD') $status = 'placed_order';
-            else $status = 'confirmed_order';
+            // $order_id = $order->id;
+            $order = Order::findOrFail($request->oid);
+            // return $order;
 
-            // dd($status);
-            $order = Order::create([
-                'order_number' => $this->generateOrderNumber(),
-                'branch_id'    => $request->branch_id,
-                'campaign_id'  => $request->campaign_id,
-                'customer_id'  => $request->customer_id,
-                'item_count'  => $request->item_count,
-                'payment_method' => $request->payment,
-                'discount' => 0,
-                'tax' => 0,
-                'sub_total'    => $request->item_price,
-                'total'        => $request->total_price,
-                "name"           => $request->name,
-                "phone"          => $request->phone,
-                "address"        => $request->address,
-                "note"           => $request->note,
-                "status"         => $status,
-                "order_date"     => date('Y-m-d')
-            ]);
-
-            $order_id = $order->id;
-
-
-            // dd($order);
-            // dd($order_id);
-            // return $order_id;
-            // update customer info
             if ($request->customer_info) {
                 $customer = Customer::where('id', $request->customer_id)->first();
                 $customer->update([
@@ -123,29 +102,32 @@ class OrderController extends Controller
                     'delivery_contact' => $request->phone,
                     'delivery_address' => $request->address
                 ]);
+            } else {
+                $order->update([
+                    'delivery_name' => $request->name,
+                    'delivery_phone' => $request->phone,
+                    'delivery_address' => $request->address
+                ]);
             }
 
-            // dd($order->item_id);
-            OrderDetail::create([
-                'order_id' => $order_id,
-                'item_id' => $request->item_id,
-                'price' => $request->item_price,
-                'quantity' => $request->item_count,
-                'amount' => $request->total_price
-            ]);
+            // // dd($order->item_id);
+            // OrderDetail::create([
+            //     'order_id' => $order_id,
+            //     'item_id' => $request->item_id,
+            //     'price' => $request->item_price,
+            //     'quantity' => $request->item_count,
+            //     'amount' => $request->total_price
+            // ]);
 
-
-
-            $subitem = SubItem::findOrFail($request->item_id);
-            $updateStock = $subitem->stock - $request->item_count;
-            $subitem->stock = $updateStock;
-            $subitem->save();
+            // $subitem = SubItem::findOrFail($request->item_id);
+            // $updateStock = $subitem->stock - $request->item_count;
+            // $subitem->stock = $updateStock;
+            // $subitem->save();
 
             Log::info('Order created successfully');
-
             return redirect()->route('confirm#detail', [
                 'sid' => $request->channel_customer_id,
-                'od' => $order_id
+                'od' => $order->id
             ]);
         } catch (\Throwable $th) {
             // dd($th);
@@ -164,13 +146,13 @@ class OrderController extends Controller
             $customer = Customer::where('channel_customer_id', $request->sid)->first();
 
             $order = Order::where('id', $request->od)->with('order_detail')->first();
-            // return $order->id;
+            // return $order;
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
 
             $subItems = SubItem::whereIn('id', $order->order_detail->pluck('item_id'))->get()->keyBy('id');
-
+            // dd($subItems);
 
             return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems'));
             // return view('/');
@@ -188,19 +170,20 @@ class OrderController extends Controller
         // return $request->all();
         // return $data;
         try {
-            $data = Order::findOrFail($request->oid);
+            $data = Order::findOrFail($request->od);
             // return $data;
+            // dd($data);
             $data->update([
                 'status' => 'Checkout'
             ]);
 
-            return 'success';
-            // return redirect()->route('order#confirmed');
-            return redirect()->back();
+            // return 'success';
+            return redirect()->route('order#confirmed');
+            // return redirect()->back();
             // return response()->json(['message' => 'Order confirmed successfully'], 200);
         } catch (\Throwable $th) {
             //throw $th;
-            dd($th);
+            // dd($th);
             Log::error('error update confirm order status');
         }
     }

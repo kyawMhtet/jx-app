@@ -14,8 +14,8 @@
 
     <script>
         setTimeout(() => {
-            window.open('', '_self').close(); // Attempt to close the window
-            window.location.href = 'about:blank'; // Fallback navigation attempt
+            window.open('', '_self').close();
+            window.location.href = 'about:blank';
         }, 3000);
     </script>
 </body>

@@ -100,6 +100,7 @@
     <input type="hidden" name="branch_id" value="{{ $item->branch_id }}">
     <input type="hidden" name="campaign_id" value="{{ $campaign->id }}">
     <input type="hidden" name="item_id" value="{{ $item->id }}">
+    <input type="hidden" name="oid" value="{{ $order->id }}">
 
 
     <div>
