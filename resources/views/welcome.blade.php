@@ -8,21 +8,7 @@
 
     {{-- <script src="https://connect.facebook.net/en_US/messenger.Extensions.js"></script> --}}
 
-    <script>
-      if(location.search.includes("www.facebook.com") || location.search.includes("www.messenger.com")){
-
-        console.log("Skipp messenger SDK");
-
-      }else{
-        (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
-        fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'Messenger'));
-      }
-    </script>
+   
 
 
 
@@ -30,8 +16,23 @@
 </head>
 <body>
 
+<script>
+    //   if(location.search.includes("www.facebook.com") || location.search.includes("www.messenger.com")){
 
-<form id="confirmationForm">
+    //     console.log("Skipp messenger SDK");
+
+    //   }else{
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'Messenger'));
+//   }
+</script>
+
+<form id="confirmationForm" action="#">
 
 
     <div class="info">
@@ -114,6 +115,7 @@
     });
 
     function closeBtn() {
+            console.log("Close btn")
             MessengerExtensions.requestCloseBrowser(function success() {
                 alert('webview closed');
                 console.log("Webview closed");
