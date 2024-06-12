@@ -170,10 +170,10 @@ class OrderController extends Controller
             $shop = Shop::findOrFail($branch->shop_id);
 
             $subItems = SubItem::whereIn('id', $order->order_detail->pluck('item_id'))->get()->keyBy('id');
-            // return $subItems;
 
 
             return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems'));
+            // return view('/');
         } catch (\Throwable $th) {
             //throw $th;
             Log::error('errorConfirmDetail');
@@ -188,7 +188,7 @@ class OrderController extends Controller
         // return $request->all();
         // return $data;
         try {
-            $data = Order::findOrFail($request->order_id);
+            $data = Order::findOrFail($request->oid);
             // return $data;
             $data->update([
                 'status' => 'Checkout'
@@ -196,6 +196,7 @@ class OrderController extends Controller
 
             return 'success';
             // return redirect()->route('order#confirmed');
+            return redirect()->back();
             // return response()->json(['message' => 'Order confirmed successfully'], 200);
         } catch (\Throwable $th) {
             //throw $th;
