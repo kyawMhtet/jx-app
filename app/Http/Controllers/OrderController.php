@@ -59,17 +59,21 @@ class OrderController extends Controller
     {
 
         $customer = Customer::where('channel_customer_id', $request->sid)->first();
-
+        // return $customer;
         $campaign = Campaign::where('id', $request->cid)->first();
         // dd($campaign);
         $item = SubItem::where('id', $request->iid)->first();
 
         $order = Order::where('id', $request->oid)->first();
 
-        // dd($order);
+        $previousOrder = Order::where('customer_id', $customer->id)
+            ->orderBy('id', 'desc')
+            ->first();
+        // return $previousOrder;
+
         $currentDate = Carbon::now()->format('d/m/Y');
 
-        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate', 'order'));
+        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate', 'order', 'previousOrder'));
     }
 
 
@@ -104,12 +108,11 @@ class OrderController extends Controller
                 ]);
             } else {
                 $order->update([
-                    'delivery_name' => $request->name,
-                    'delivery_phone' => $request->phone,
-                    'delivery_address' => $request->address
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'address' => $request->address
                 ]);
             }
-
             // // dd($order->item_id);
             // OrderDetail::create([
             //     'order_id' => $order_id,

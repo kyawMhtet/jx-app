@@ -129,7 +129,9 @@
                     name-label-invalid
                 @enderror"">Name </label>
             <div class="">
-                <input type="text" name="name" class="@error('name')
+                <input type="text" name="name"
+                value="{{ old('name', optional($previousOrder)->name ?? '') }}"
+                class="@error('name')
                     name-invalid
                 @enderror">
                 {{-- @error('name')
@@ -145,7 +147,9 @@
                 phone-label-invalid
             @enderror" >Phone</label>
             <div class="">
-                <input type="text" name="phone" class="@error('phone')
+                <input type="text" name="phone"
+                value="{{ old('phone', optional($previousOrder)->phone ?? '') }}"
+                class="@error('phone')
                     phone-invalid
                 @enderror">
 
@@ -159,14 +163,14 @@
             <div class="">
                 <textarea name="address" id="" cols="" rows="3" class="@error('address')
                     address-invalid
-                @enderror"></textarea>
+                @enderror">{{ old('address', optional($previousOrder)->address ?? '') }}</textarea>
             </div>
         </div>
 
         <div class="amount">
             <label for="">Note (optional) </label>
             <div class="">
-                <textarea name="note" id="" cols="" rows="2"></textarea>
+                <textarea name="note" id="" cols="" rows="2">{{ old('note', optional($previousOrder)->note ?? '') }}</textarea>
             </div>
         </div>
 
@@ -175,9 +179,9 @@
             <div class="selectdiv">
                 <label>
                     <select name="payment">
-                        <option value="COD"> Cash On Delivery </option>
-                        <option value="kpay">KPay</option>
-                        <option value="Paid">Prepaid</option>
+                        <option value="COD" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'COD') ? 'selected' : '' }}> Cash On Delivery </option>
+                        <option value="kpay" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'kpay') ? 'selected' : '' }}>KPay</option>
+                        <option value="Paid" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'Paid') ? 'selected' : '' }}>Prepaid</option>
                     </select>
                 </label>
               </div>
