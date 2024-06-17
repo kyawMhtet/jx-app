@@ -38,6 +38,16 @@ class Order extends Model
 
 
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);

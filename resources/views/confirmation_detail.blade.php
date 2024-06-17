@@ -65,12 +65,18 @@
 
                         @php
                             $orderDetail = $order_details->firstWhere('item_id', $subitem->id);
+                            // return $orderDetail;
                         @endphp
                         @if ($orderDetail)
                             <span>Qty: {{ $orderDetail->quantity }}</span>
                         @else
                             <span>Qty: 0</span>
                         @endif
+                        {{-- @foreach ($order_details as $order_detail)
+                            <span>
+                                Qty: {{ $order_detail->quantity }}
+                            </span>
+                        @endforeach --}}
                     </div>
                 </div>
             </div>

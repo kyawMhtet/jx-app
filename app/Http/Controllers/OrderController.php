@@ -67,7 +67,8 @@ class OrderController extends Controller
         // return $order_details;
         $item_ids = $order_details->pluck('item_id');
         // return $item_ids;
-        $items = SubItem::whereIn('id', $item_ids)->get();
+        // $items = SubItem::whereIn('id', $item_ids)->get();
+        $items = SubItem::whereIn('id', $order_details->pluck('item_id'))->get()->keyBy('id');
         // return $items;
         $totalPrice = $items->sum('price');
 
@@ -95,12 +96,6 @@ class OrderController extends Controller
                 return redirect()->back()->withErrors($validation)->withInput();
             }
 
-            // $status = 'new_order';
-            // if ($request->payment == 'Paid') $status = 'placed_order';
-            // else if ($request->payment == 'COD') $status = 'placed_order';
-            // else $status = 'confirmed_order';
-
-            // $order_id = $order->id;
             $order = Order::findOrFail($request->oid);
             // return $order;
 
@@ -118,19 +113,7 @@ class OrderController extends Controller
                     'address' => $request->address
                 ]);
             }
-            // // dd($order->item_id);
-            // OrderDetail::create([
-            //     'order_id' => $order_id,
-            //     'item_id' => $request->item_id,
-            //     'price' => $request->item_price,
-            //     'quantity' => $request->item_count,
-            //     'amount' => $request->total_price
-            // ]);
 
-            // $subitem = SubItem::findOrFail($request->item_id);
-            // $updateStock = $subitem->stock - $request->item_count;
-            // $subitem->stock = $updateStock;
-            // $subitem->save();
 
             Log::info('Order created successfully');
             return redirect()->route('confirm#detail', [
@@ -156,13 +139,13 @@ class OrderController extends Controller
             $order = Order::where('id', $request->od)->with('order_detail')->first();
             // return $order;
             $order_details = $order->order_detail;
+            // $order_details = OrderDetail::where('order_id', $request->od)->get();
             // return $order_details;
-
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
 
-            $subItems = SubItem::whereIn('id', $order->order_detail->pluck('item_id'))->get()->keyBy('id');
+            $subItems = SubItem::whereIn('id', $order_details->pluck('item_id'))->get()->keyBy('id');
             // return ($subItems);
 
             return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems', 'order_details'));
