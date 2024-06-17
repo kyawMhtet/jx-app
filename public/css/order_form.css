@@ -245,6 +245,7 @@ body {
         justify-content: center;
         gap: 5px;
         padding: 0 15px;
+        margin-bottom: 20px;
         /* align-items: center; */
     }
 

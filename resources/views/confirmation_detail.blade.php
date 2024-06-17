@@ -8,11 +8,9 @@
 
     <script src="https://connect.facebook.net/en_US/messenger.Extensions.js"></script>
 
-
     <link rel="stylesheet" href="{{ asset('css/confirm_detail.css') }}">
 </head>
 <body>
-
 
 <form id="confirmationForm" action="{{ route('confirm#order') }}" method="POST">
     @csrf
@@ -21,7 +19,6 @@
 
     <div class="info">
         <h3>Confirmation Detail</h3>
-
         <hr>
 
         <div>
@@ -39,73 +36,56 @@
             <h4>Payment Info</h4>
             <div>
                 <p>Status</p>
-
-                <small>{{ $order->status }}.</small>
+                <small>{{ $order->status }}</small>
             </div>
         </div>
-
 
         <hr>
         <div class="payment">
-          <div>
-              <p>Updated at</p>
-
-              <small>29 April 2024, 15:57</small>
-          </div>
-      </div>
-      </div>
-
-    <div class="lists">
-        {{-- <h4>Order Item List</h4> --}}
-        @foreach ($subItems as $subitem)
-        <div class="item-list">
-            <img src="{{ $subitem->image_url }}" alt="">
-
-            <div class="">
-                <p class="name">
-                    {{ $subitem->sub_item_name }}
-                </p>
-
-                <div class="item-amount">
-                        <p>
-                            {{ $subitem->price }} Ks
-                        </p>
-
-                        <span>
-                            Qty: 1
-                        </span>
-
-
-                </div>
+            <div>
+                <p>Updated at</p>
+                {{-- <small>{{ \Carbon\Carbon::parse($order->updated_at)->format('d F Y, H:i') }}</small> --}}
+                <small>
+                    {{ $order->updated_at->format('d F Y, H:i') }}
+                </small>
             </div>
         </div>
+    </div>
+
+    <div class="lists">
+        @foreach ($subItems as $subitem)
+            <div class="item-list">
+                <img src="{{ $subitem->image_url }}" alt="">
+
+                <div class="">
+                    <p class="name">{{ $subitem->sub_item_name }}</p>
+
+                    <div class="item-amount">
+                        <p>{{ $subitem->price }} Ks</p>
+
+                        @php
+                            $orderDetail = $order_details->firstWhere('item_id', $subitem->id);
+                        @endphp
+                        @if ($orderDetail)
+                            <span>Qty: {{ $orderDetail->quantity }}</span>
+                        @else
+                            <span>Qty: 0</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
         @endforeach
     </div>
 
-    {{-- <button class="btn" type="submit" onclick="closeBtn(e)" >
-        Confirm Order
-    </button> --}}
-
-    <button class="btn" type="submit" >
-        Confirm Order
-    </button>
+    <button class="btn" type="submit">Confirm Order</button>
 </form>
 
-
-
-
-
-
 <script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     MessengerExtensions.getSupportedFeatures(function success(result) {
-    //         var features = result.supported_features;
-    //         console.log("Supported features: ", features);
-    //     }, function error(err) {
-    //         console.error("Error: ", err);
-    //     });
-    // });
+    document.addEventListener('DOMContentLoaded', function () {
+        // MessengerExtensions initialization if needed
+    });
 
+    // Uncomment the function below if you need to close the webview on form submission
     // function closeBtn(e) {
     //     e.preventDefault();
     //     const form = document.getElementById('confirmationForm');
@@ -120,11 +100,7 @@
 
     //     form.submit();
     // }
-
 </script>
-
-
-
 
 </body>
 </html>

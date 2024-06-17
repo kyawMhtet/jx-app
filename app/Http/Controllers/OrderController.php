@@ -61,10 +61,15 @@ class OrderController extends Controller
         $customer = Customer::where('channel_customer_id', $request->sid)->first();
         // return $customer;
         $campaign = Campaign::where('id', $request->cid)->first();
-        // dd($campaign);
-        $item = SubItem::where('id', $request->iid)->first();
-
-        $order = Order::where('id', $request->oid)->first();
+        // $item = SubItem::where('id', $request->iid)->get();
+        $order = Order::where('id', $request->oid)->with('order_detail')->first();
+        $order_details = $order->order_detail;
+        // return $order_details;
+        $item_ids = $order_details->pluck('item_id');
+        // return $item_ids;
+        $items = SubItem::whereIn('id', $item_ids)->get();
+        // return $items;
+        $totalPrice = $items->sum('price');
 
         $previousOrder = Order::where('customer_id', $customer->id)
             ->orderBy('id', 'desc')
@@ -73,7 +78,7 @@ class OrderController extends Controller
 
         $currentDate = Carbon::now()->format('d/m/Y');
 
-        return view('order_form', compact('item', 'customer', 'campaign', 'currentDate', 'order', 'previousOrder'));
+        return view('order_form', compact('items', 'customer', 'order', 'order_details', 'campaign', 'totalPrice', 'currentDate', 'order', 'previousOrder'));
     }
 
 
@@ -85,10 +90,10 @@ class OrderController extends Controller
         // return $request->item_id;
         try {
 
-            // $validation = $this->validation($request);
-            // if ($validation->fails()) {
-            //     return redirect()->back()->withErrors($validation)->withInput();
-            // }
+            $validation = $this->validation($request);
+            if ($validation->fails()) {
+                return redirect()->back()->withErrors($validation)->withInput();
+            }
 
             // $status = 'new_order';
             // if ($request->payment == 'Paid') $status = 'placed_order';
@@ -150,14 +155,17 @@ class OrderController extends Controller
 
             $order = Order::where('id', $request->od)->with('order_detail')->first();
             // return $order;
+            $order_details = $order->order_detail;
+            // return $order_details;
+
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
 
             $subItems = SubItem::whereIn('id', $order->order_detail->pluck('item_id'))->get()->keyBy('id');
-            // dd($subItems);
+            // return ($subItems);
 
-            return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems'));
+            return view('confirmation_detail', compact('customer', 'order', 'branch', 'shop', 'subItems', 'order_details'));
             // return view('/');
         } catch (\Throwable $th) {
             //throw $th;

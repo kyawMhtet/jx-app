@@ -87,10 +87,10 @@
 
     function closeBtn() {
             MessengerExtensions.requestCloseBrowser(function success() {
-                alert('webview closed');
+                // alert('webview closed');
                 console.log("Webview closed");
             }, function error(err) {
-                alert(err);
+                // alert(err);
                 console.error("Error closing webview: ", err);
             });
     }
