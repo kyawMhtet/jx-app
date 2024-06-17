@@ -76,7 +76,7 @@ class OrderController extends Controller
         // $previousOrder = Order::where('customer_id', $customer->id)
         //     ->orderBy('id', 'desc')
         //     ->first();
-        $previousOrder = Order::where('id', $order->id)->first();
+        $previousOrder = $order->where('customer_id', $customer->id)->orderBy('id', 'desc')->first();
         // return $previousOrder;
 
         $currentDate = Carbon::now()->format('d/m/Y');
