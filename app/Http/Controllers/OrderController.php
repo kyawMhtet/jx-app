@@ -63,6 +63,7 @@ class OrderController extends Controller
         $campaign = Campaign::where('id', $request->cid)->first();
         // $item = SubItem::where('id', $request->iid)->get();
         $order = Order::where('id', $request->oid)->with('order_detail')->first();
+        // return $order;
         $order_details = $order->order_detail;
         // return $order_details;
         $item_ids = $order_details->pluck('item_id');
@@ -72,9 +73,10 @@ class OrderController extends Controller
         // return $items;
         $totalPrice = $items->sum('price');
 
-        $previousOrder = Order::where('customer_id', $customer->id)
-            ->orderBy('id', 'desc')
-            ->first();
+        // $previousOrder = Order::where('customer_id', $customer->id)
+        //     ->orderBy('id', 'desc')
+        //     ->first();
+        $previousOrder = Order::where('id', $order->id)->first();
         // return $previousOrder;
 
         $currentDate = Carbon::now()->format('d/m/Y');
@@ -110,7 +112,8 @@ class OrderController extends Controller
                 $order->update([
                     'name' => $request->name,
                     'phone' => $request->phone,
-                    'address' => $request->address
+                    'address' => $request->address,
+                    'note' => $request->note
                 ]);
             }
 
