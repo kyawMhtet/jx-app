@@ -50,7 +50,7 @@
                             {{ $order_detail['quantity'] }}
                             <input type="hidden" name="quantity[]" value="{{ $order_detail['quantity'] }}" min="1" class="quantity" data-price="{{ $item->price }}">
                         </td>
-                        <td >{{ $item->price }} Ks</td>
+                        <td >{{ number_format($item->price, 0) }} Ks</td>
                     </tr>
                 @endif
             @endforeach
@@ -82,40 +82,59 @@
         <div class="amount">
             <label for="" class="@error('name') name-label-invalid @enderror">Name</label>
             <div class="">
-                <input type="text" name="name" value="{{ old('name', optional($previousOrder)->name ?? '') }}" class="@error('name') name-invalid @enderror">
+                {{-- <input type="text" name="name" value="{{ old('name', optional($previousOrder)->name ?? '') }}" class="@error('name') name-invalid @enderror"> --}}
+
+                {{-- <input type="text" name="name" value="{{ $previousCustomerData['name'] }}" class="@error('name') name-invalid @enderror"> --}}
+
+                <input type="text" name="name" value="{{ $customer->delivery_name ?? '' }}"
+                class="@error('name') name-invalid @enderror"
+                >
+
             </div>
         </div>
 
         <div class="amount">
             <label for="" class="@error('phone') phone-label-invalid @enderror">Phone</label>
             <div class="">
-                <input type="text" name="phone" value="{{ old('phone', optional($previousOrder)->phone ?? '') }}" class="@error('phone') phone-invalid @enderror">
+                {{-- <input type="text" name="phone" value="{{ old('phone', $previousCustomerData['phone'] ?? '') }}" class="@error('phone') phone-invalid @enderror"> --}}
+                <input type="text" name="phone" value="{{ $customer->delivery_contact ?? '' }}">
             </div>
         </div>
 
         <div class="amount">
             <label for="" class="@error('address') address-label-invalid @enderror">Address</label>
             <div class="">
-                <textarea name="address" cols="" rows="3" class="@error('address') address-invalid @enderror">{{ old('address', optional($previousOrder)->address ?? '') }}</textarea>
+                {{-- <textarea name="address" cols="" rows="3" class="@error('address') address-invalid @enderror">{{ old('address', $previousCustomerData['address'] ?? '') }}</textarea> --}}
+                <textarea name="address" id="" cols="" rows="3">{{ $customer->delivery_address ?? '' }}</textarea>
             </div>
         </div>
 
         <div class="amount">
             <label for="">Note (optional)</label>
             <div class="">
-                <textarea name="note" cols="" rows="2">{{ old('note', optional($previousOrder)->note ?? '') }}</textarea>
+                {{-- <textarea name="note" cols="" rows="2">{{ old('note', optional($previousOrder)->note ?? '') }}</textarea> --}}
+                <textarea name="note" id="" cols="" rows="3"></textarea>
             </div>
         </div>
 
         <div class="amount">
             <div class="selectdiv">
-                <label>
-                    <select name="payment">
-                        <option value="COD" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'COD') ? 'selected' : '' }}>Cash On Delivery</option>
-                        <option value="kpay" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'kpay') ? 'selected' : '' }}>KPay</option>
-                        <option value="Paid" {{ (old('payment_method', optional($previousOrder)->payment_method ?? '') == 'Paid') ? 'selected' : '' }}>Prepaid</option>
-                    </select>
-                </label>
+                {{-- <select name="payment_method">
+                    <option value="COD"
+                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'COD') ? 'selected' : '' }}>
+                    Cash On Delivery</option>
+                <option value="kpay"
+                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'kpay') ? 'selected' : '' }}>
+                    KPay</option>
+                <option value="Paid"
+                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'Paid') ? 'selected' : '' }}>
+                    Prepaid</option>
+                </select> --}}
+                <select name="payment_method" id="">
+                    <option value="COD">Cash On Delivery</option>
+                    <option value="kpay">KPay</option>
+                    <option value="Paid">Prepaid</option>
+                </select>
             </div>
         </div>
 
@@ -142,6 +161,10 @@
         const totalPriceElement = document.getElementById('totalPrice');
         const hiddenTotalPriceInput = document.getElementById('hiddenTotalPrice');
 
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function updateTotalPrice() {
             let totalPrice = 0;
             quantityInputs.forEach(input => {
@@ -149,7 +172,7 @@
                 const quantity = parseInt(input.value);
                 totalPrice += price * quantity;
             });
-            totalPriceElement.textContent = totalPrice + ' Ks';
+            totalPriceElement.textContent = numberWithCommas(totalPrice) + ' Ks';
             hiddenTotalPriceInput.value = totalPrice;
         }
 
@@ -162,6 +185,8 @@
         });
 
         continueShoppingButton.addEventListener('click', function() {
+            // orderForm.action = "{{ route('user#checkout') }}";
+            // orderForm.submit();
             window.location.href = 'fb://page/102089854919616';
             setTimeout(() => {
                 window.location.href = 'https://www.facebook.com/twoofficialpage/';

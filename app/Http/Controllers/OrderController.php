@@ -21,18 +21,6 @@ class OrderController extends Controller
 {
     //
 
-    private function generateOrderNumber()
-    {
-        $length = 5;
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-
-        return $randomString;
-    }
 
     public function detail(Request $request)
     {
@@ -57,38 +45,60 @@ class OrderController extends Controller
     //
     public function orderForm(Request $request)
     {
+        try {
+            $customer = Customer::where('channel_customer_id', $request->sid)->first();
+            $campaign = Campaign::where('id', $request->cid)->first();
+            $order = Order::where('id', $request->oid)->with('order_detail')->first();
+            $order_details = $order->order_detail;
+            $items = SubItem::whereIn('id', $order_details->pluck('item_id'))->get()->keyBy('id');
+            $totalPrice = $items->sum('price');
 
-        $customer = Customer::where('channel_customer_id', $request->sid)->first();
-        // return $customer;
-        $campaign = Campaign::where('id', $request->cid)->first();
-        // $item = SubItem::where('id', $request->iid)->get();
-        $order = Order::where('id', $request->oid)->with('order_detail')->first();
-        // return $order;
-        $order_details = $order->order_detail;
-        // return $order_details;
-        $item_ids = $order_details->pluck('item_id');
-        // return $item_ids;
-        // $items = SubItem::whereIn('id', $item_ids)->get();
-        $items = SubItem::whereIn('id', $order_details->pluck('item_id'))->get()->keyBy('id');
-        // return $items;
-        $totalPrice = $items->sum('price');
+            // $latestOrder = Order::where('customer_id', $customer->id)
+            //     ->orderBy('id', 'desc')
+            //     ->first();
 
-        // $previousOrder = Order::where('customer_id', $customer->id)
-        //     ->orderBy('id', 'desc')
-        //     ->first();
-        $previousOrder = $order->where('customer_id', $customer->id)->orderBy('id', 'desc')->first();
-        // return $previousOrder;
+            // $previousCustomerData = [
+            //     'name' => '',
+            //     'phone' => '',
+            //     'address' => '',
+            //     'note' => '',
+            //     'payment_method' => ''
+            // ];
 
-        $currentDate = Carbon::now()->format('d/m/Y');
+            // if ($latestOrder) {
+            //     $previousOrder = Order::where('customer_id', $customer->id)
+            //         ->where('id', '<', $latestOrder->id)
+            //         ->orderBy('id', 'desc')
+            //         ->first();
 
-        return view('order_form', compact('items', 'customer', 'order', 'order_details', 'campaign', 'totalPrice', 'currentDate', 'order', 'previousOrder'));
+            //     if ($previousOrder) {
+            //         $previousCustomerData = [
+            //             'name' => $previousOrder->name,
+            //             'phone' => $previousOrder->phone,
+            //             'address' => $previousOrder->address,
+            //             'note' => $previousOrder->note,
+            //             'payment_method' => $previousOrder->payment_method
+            //         ];
+            //     }
+            // }
+
+            $currentDate = Carbon::now()->format('d/m/Y');
+
+            return view('order_form', compact('items', 'customer', 'order', 'order_details', 'campaign', 'totalPrice', 'currentDate'));
+        } catch (\Throwable $th) {
+            Log::error("Error in orderForm method: " . $th->getMessage());
+            // Handle error appropriately
+            return redirect()->back()->with('error', 'Failed to load order form');
+        }
     }
+
 
 
     // order by user
     public function userOrderCreate(Request $request)
     {
         // dd($request->all());
+        // return $request->all();
 
         // return $request->item_id;
         try {
@@ -108,12 +118,18 @@ class OrderController extends Controller
                     'delivery_contact' => $request->phone,
                     'delivery_address' => $request->address
                 ]);
+
+                $order->update([
+                    'note' => $request->note,
+                    'payment_method' => $request->payment_method
+                ]);
             } else {
                 $order->update([
                     'name' => $request->name,
                     'phone' => $request->phone,
                     'address' => $request->address,
-                    'note' => $request->note
+                    'note' => $request->note,
+                    'payment_method' => $request->payment_method
                 ]);
             }
 
