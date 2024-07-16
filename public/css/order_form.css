@@ -137,6 +137,7 @@ body {
     textarea,
     select {
         border-radius: 5px;
+        padding: 5px;
     }
 
     .amount {
@@ -156,6 +157,11 @@ body {
         margin-top: -5px;
     }
 
+    .amount span {
+        color: red;
+        margin-left: 5px;
+    }
+
     textarea {
         width: 95%;
         display: block;
@@ -166,7 +172,6 @@ body {
 
     .selectdiv {
         position: relative;
-
         float: left;
         /* min-width: 200px; */
         width: 100%;
@@ -185,9 +190,9 @@ body {
         -moz-transform: rotate(90deg);
         -ms-transform: rotate(90deg);
         transform: rotate(90deg);
-        right: 11px;
+        right: 6px;
 
-        top: 12px;
+        top: 8px;
         padding: 0 0 2px;
         border-bottom: 1px solid #999;
 
@@ -204,7 +209,7 @@ body {
         width: 100%;
         height: 30px;
         float: right;
-        margin: 5px 0px;
+        margin: 5px auto;
         padding: 5px;
         font-size: 13px;
         /* line-height: 1.75; */

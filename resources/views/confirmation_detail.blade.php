@@ -53,7 +53,7 @@
     </div>
 
     <div class="lists">
-        @foreach ($subItems as $subitem)
+        {{-- @foreach ($subItems as $subitem)
             <div class="item-list">
                 <img src="{{ $subitem->image_url }}" alt="">
 
@@ -72,15 +72,35 @@
                         @else
                             <span>Qty: 0</span>
                         @endif
-                        {{-- @foreach ($order_details as $order_detail)
-                            <span>
-                                Qty: {{ $order_detail->quantity }}
-                            </span>
-                        @endforeach --}}
                     </div>
                 </div>
             </div>
-        @endforeach
+        @endforeach --}}
+
+
+
+            @foreach ($order_details as $order_detail)
+                @php
+                    $item = $subItems->firstWhere('id', $order_detail['item_id']);
+                @endphp
+
+                @if ($item)
+                <div class="item-list">
+                    <img src="{{ $item->image_url }}" alt="">
+
+                    <div class="">
+                        <p class="name">{{ $item->sub_item_name }}</p>
+
+                        <div class="item-amount">
+                            <p>{{ number_format($item->price, 0) }} Ks</p>
+
+                                <span>Qty: {{ $order_detail['quantity'] }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            @endforeach
+
     </div>
 
     <button class="btn" type="submit">Confirm Order</button>

@@ -42,7 +42,7 @@ class OrderController extends Controller
         }
     }
 
-    //
+    // order form
     public function orderForm(Request $request)
     {
         try {
@@ -97,53 +97,47 @@ class OrderController extends Controller
     // order by user
     public function userOrderCreate(Request $request)
     {
-        // dd($request->all());
-        // return $request->all();
-
-        // return $request->item_id;
         try {
-
             $validation = $this->validation($request);
             if ($validation->fails()) {
                 return redirect()->back()->withErrors($validation)->withInput();
             }
 
             $order = Order::findOrFail($request->oid);
-            // return $order;
 
             if ($request->customer_info) {
                 $customer = Customer::where('id', $request->customer_id)->first();
-                $customer->update([
-                    'delivery_name' => $request->name,
-                    'delivery_contact' => $request->phone,
-                    'delivery_address' => $request->address
-                ]);
-
-                $order->update([
-                    'note' => $request->note,
-                    'payment_method' => $request->payment_method
-                ]);
-            } else {
-                $order->update([
-                    'name' => $request->name,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                    'note' => $request->note,
-                    'payment_method' => $request->payment_method
-                ]);
+                if ($customer) {
+                    $customer->update([
+                        'delivery_name' => $request->name,
+                        'delivery_contact' => $request->phone,
+                        'delivery_address' => $request->address
+                    ]);
+                } else {
+                    Log::error('Customer not found: ' . $request->customer_id);
+                }
             }
 
+            $order->update([
+                'note' => $request->note,
+                'payment_method' => $request->payment_method,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ]);
 
-            Log::info('Order created successfully');
+            Log::info('Order updated successfully');
+
             return redirect()->route('confirm#detail', [
                 'sid' => $request->channel_customer_id,
                 'od' => $order->id
             ]);
         } catch (\Throwable $th) {
-            // dd($th);
-            Log::error("error creating order");
+            Log::error('Error creating order: ' . $th->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while creating the order. Please try again.');
         }
     }
+
 
 
 
@@ -152,14 +146,19 @@ class OrderController extends Controller
     {
 
         // dd($request->all());
+        // $customer = Customer::where('channel_customer_id', $request->sid)->first();
+        // $campaign = Campaign::where('id', $request->cid)->first();
+        // $order = Order::where('id', $request->oid)->with('order_detail')->first();
+        // $order_details = $order->order_detail;
+        // $items = SubItem::whereIn('id', $order_details->pluck('item_id'))->get()->keyBy('id');
+
         try {
             $customer = Customer::where('channel_customer_id', $request->sid)->first();
 
             $order = Order::where('id', $request->od)->with('order_detail')->first();
-            // return $order;
+
             $order_details = $order->order_detail;
-            // $order_details = OrderDetail::where('order_id', $request->od)->get();
-            // return $order_details;
+
             $branch = Branch::findOrFail($order->branch_id);
 
             $shop = Shop::findOrFail($branch->shop_id);
@@ -184,16 +183,12 @@ class OrderController extends Controller
         // return $data;
         try {
             $data = Order::findOrFail($request->od);
-            // return $data;
-            // dd($data);
             $data->update([
                 'status' => 'Checkout'
             ]);
 
             // return 'success';
             return redirect()->route('order#confirmed');
-            // return redirect()->back();
-            // return response()->json(['message' => 'Order confirmed successfully'], 200);
         } catch (\Throwable $th) {
             //throw $th;
             // dd($th);
@@ -213,15 +208,12 @@ class OrderController extends Controller
     private function validation($request)
     {
         return Validator::make($request->all(), [
-            // 'branch_id'    => 'required',
-            // 'campaign_id'  => 'required',
-            // 'customer_id'  => 'required',
-            // 'payment_method' => 'required',
-            // 'discount' => 0,
-            // 'tax' => 0,
+
+            'payment_method' => 'required',
             "name"           => 'required',
             "phone"          => 'required',
             "address"        => 'required',
+
         ]);
     }
 }

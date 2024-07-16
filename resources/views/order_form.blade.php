@@ -6,18 +6,36 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Order Form</title>
     <link rel="stylesheet" href="{{ asset('css/order_form.css') }}">
+    <style>
+        input.name-invalid, textarea.address-invalid, input.phone-invalid {
+            border-color: red;
+        }
+
+        .name-label-invalid, .phone-label-invalid, .address-label-invalid {
+            color: red;
+        }
+
+        .error-message {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
     <form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
         @csrf
-        <div class="detail">
-            <div>
-                <h4>Order</h4>
-                <small>#62175</small>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
+        <div class="detail">
             <div>
                 <h5>Facebook Name : </h5>
                 <span> {{ $customer->customer_name }} </span>
@@ -80,67 +98,50 @@
         <input type="hidden" name="oid" value="{{ $order->id }}">
 
         <div class="amount">
-            <label for="" class="@error('name') name-label-invalid @enderror">Name</label>
+            <label for="name" class="@error('name') name-label-invalid @enderror">Name</label>
             <div class="">
-                {{-- <input type="text" name="name" value="{{ old('name', optional($previousOrder)->name ?? '') }}" class="@error('name') name-invalid @enderror"> --}}
-
-                {{-- <input type="text" name="name" value="{{ $previousCustomerData['name'] }}" class="@error('name') name-invalid @enderror"> --}}
-
-                <input type="text" name="name" value="{{ $customer->delivery_name ?? '' }}"
-                class="@error('name') name-invalid @enderror"
-                >
-
+                <input type="text" name="name" id="name" value="{{ old('name', $customer->delivery_name ?? '') }}"
+                class="@error('name') name-invalid @enderror" required>
+                <span>
             </div>
         </div>
 
         <div class="amount">
-            <label for="" class="@error('phone') phone-label-invalid @enderror">Phone</label>
+            <label for="phone" class="@error('phone') phone-label-invalid @enderror">Phone</label>
             <div class="">
-                {{-- <input type="text" name="phone" value="{{ old('phone', $previousCustomerData['phone'] ?? '') }}" class="@error('phone') phone-invalid @enderror"> --}}
-                <input type="text" name="phone" value="{{ $customer->delivery_contact ?? '' }}">
+                <input type="text" name="phone" id="phone" value="{{ old('phone', $customer->delivery_contact ?? '') }}" required>
+                <span>
             </div>
         </div>
 
         <div class="amount">
-            <label for="" class="@error('address') address-label-invalid @enderror">Address</label>
+            <label for="address" class="@error('address') address-label-invalid @enderror">Address</label>
             <div class="">
-                {{-- <textarea name="address" cols="" rows="3" class="@error('address') address-invalid @enderror">{{ old('address', $previousCustomerData['address'] ?? '') }}</textarea> --}}
-                <textarea name="address" id="" cols="" rows="3">{{ $customer->delivery_address ?? '' }}</textarea>
+                <textarea name="address" id="address" cols="" rows="3" required>{{ old('address', $customer->delivery_address ?? '') }}</textarea>
+                <span>
             </div>
         </div>
 
         <div class="amount">
-            <label for="">Note (optional)</label>
+            <label for="note">Note (optional)</label>
             <div class="">
-                {{-- <textarea name="note" cols="" rows="2">{{ old('note', optional($previousOrder)->note ?? '') }}</textarea> --}}
-                <textarea name="note" id="" cols="" rows="3"></textarea>
+                <textarea name="note" id="note" cols="" rows="3">{{ old('note', '') }}</textarea>
             </div>
         </div>
 
         <div class="amount">
             <div class="selectdiv">
-                {{-- <select name="payment_method">
-                    <option value="COD"
-                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'COD') ? 'selected' : '' }}>
-                    Cash On Delivery</option>
-                <option value="kpay"
-                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'kpay') ? 'selected' : '' }}>
-                    KPay</option>
-                <option value="Paid"
-                    {{ (old('payment_method', $previousCustomerData['payment_method']) == 'Paid') ? 'selected' : '' }}>
-                    Prepaid</option>
-                </select> --}}
-                <select name="payment_method" id="">
-                    <option value="COD">Cash On Delivery</option>
-                    <option value="kpay">KPay</option>
-                    <option value="Paid">Prepaid</option>
+                <select name="payment_method" id="paymentMethod">
+                    <option value="COD" {{ old('payment_method', 'COD') == 'COD' ? 'selected' : '' }}>Cash On Delivery</option>
+                    <option value="kpay" {{ old('payment_method') == 'kpay' ? 'selected' : '' }}>KPay</option>
+                    <option value="Paid" {{ old('payment_method') == 'Paid' ? 'selected' : '' }}>Prepaid</option>
                 </select>
             </div>
         </div>
 
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="customer_info"/>
+                <input type="checkbox" name="customer_info" {{ old('customer_info') ? 'checked' : '' }}/>
                 <span>လက်ရှိဖုန်းနံပါတ်နှင့် လိပ်စာကိုနောက်ထပ် order များအတွက်သိမ်းထားမည်။</span>
             </label>
         </div>
@@ -160,6 +161,9 @@
         const quantityInputs = document.querySelectorAll('.quantity');
         const totalPriceElement = document.getElementById('totalPrice');
         const hiddenTotalPriceInput = document.getElementById('hiddenTotalPrice');
+        const nameInput = document.querySelector('input[name="name"]');
+        const phoneInput = document.querySelector('input[name="phone"]');
+        const addressInput = document.querySelector('textarea[name="address"]');
 
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -176,24 +180,57 @@
             hiddenTotalPriceInput.value = totalPrice;
         }
 
+        function validateInputs() {
+            let isValid = true;
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('name-invalid');
+                nameInput.nextElementSibling.innerText = 'Please enter your name.';
+                isValid = false;
+            } else {
+                nameInput.classList.remove('name-invalid');
+                nameInput.nextElementSibling.innerText = '';
+            }
+
+            // Validate Phone
+            if (!phoneInput.value.trim()) {
+                phoneInput.classList.add('phone-invalid');
+                phoneInput.nextElementSibling.innerText = 'Please enter your phone number.';
+                isValid = false;
+            } else {
+                phoneInput.classList.remove('phone-invalid');
+                phoneInput.nextElementSibling.innerText = '';
+            }
+
+            // Validate Address
+            if (!addressInput.value.trim()) {
+                addressInput.classList.add('address-invalid');
+                addressInput.nextElementSibling.innerText = 'Please enter your address.';
+                isValid = false;
+            } else {
+                addressInput.classList.remove('address-invalid');
+                addressInput.nextElementSibling.innerText = '';
+            }
+
+            return isValid;
+        }
+
         quantityInputs.forEach(input => {
             input.addEventListener('input', updateTotalPrice);
         });
 
-        checkOutButton.addEventListener('click', function () {
-            orderForm.action = "{{ route('user#checkout') }}";
+        checkOutButton.addEventListener('click', function (event) {
+            if (!validateInputs()) {
+                event.preventDefault();
+            }
         });
 
         continueShoppingButton.addEventListener('click', function() {
-            // orderForm.action = "{{ route('user#checkout') }}";
-            // orderForm.submit();
             window.location.href = 'fb://page/102089854919616';
             setTimeout(() => {
                 window.location.href = 'https://www.facebook.com/twoofficialpage/';
             }, 1000);
         });
 
-        // Initial total price calculation
         updateTotalPrice();
     });
 
