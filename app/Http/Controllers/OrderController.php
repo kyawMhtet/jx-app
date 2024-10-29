@@ -220,6 +220,11 @@ class OrderController extends Controller
                 'status' => 'Checkout'
             ]);
 
+            $order_detail = OrderDetail::where('order_id', $data->id)->first();
+
+            $order_detail->avi_quantity = $order_detail->quantity;
+            $order_detail->save();
+
             // return 'success';
             return redirect()->route('order#confirmed');
         } catch (\Throwable $th) {

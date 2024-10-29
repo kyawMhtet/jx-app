@@ -140,7 +140,6 @@
                     @endforeach
 
                     <option value="COD" {{ old('payment_method', 'COD') == 'COD' ? 'selected' : '' }}>Cash On Delivery</option>
-                    <option value="kpay" {{ old('payment_method') == 'kpay' ? 'selected' : '' }}>KPay</option>
                     <option value="Paid" {{ old('payment_method') == 'Paid' ? 'selected' : '' }}>Prepaid</option>
                 </select>
             </div>
