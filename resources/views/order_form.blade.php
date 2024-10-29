@@ -23,17 +23,17 @@
 <body>
 
 <div class="container">
+@if ($errors->any())
+    <div class="custom-alert">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+    </div>
+@endif
     <form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
-        @csrf
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <div class="detail">
             <div>
@@ -101,7 +101,7 @@
             <label for="name" class="@error('name') name-label-invalid @enderror">Name</label>
             <div class="">
                 <input type="text" name="name" id="name" value="{{ old('name', $customer->delivery_name ?? '') }}"
-                class="@error('name') name-invalid @enderror" required>
+                class="@error('name') name-invalid @enderror">
                 <span>
             </div>
         </div>
@@ -109,7 +109,9 @@
         <div class="amount">
             <label for="phone" class="@error('phone') phone-label-invalid @enderror">Phone</label>
             <div class="">
-                <input type="text" name="phone" id="phone" value="{{ old('phone', $customer->delivery_contact ?? '') }}" required>
+                <input type="text" name="phone" id="phone" value="{{ old('phone', $customer->delivery_contact ?? '') }}"
+                class="@error('phone') phone-invalid @enderror"
+                >
                 <span>
             </div>
         </div>
@@ -117,7 +119,7 @@
         <div class="amount">
             <label for="address" class="@error('address') address-label-invalid @enderror">Address</label>
             <div class="">
-                <textarea name="address" id="address" cols="" rows="3" required>{{ old('address', $customer->delivery_address ?? '') }}</textarea>
+                <textarea name="address" id="address" cols="" rows="3">{{ old('address', $customer->delivery_address ?? '') }}</textarea>
                 <span>
             </div>
         </div>
@@ -130,8 +132,13 @@
         </div>
 
         <div class="amount">
+            <label for="">Choose Payments</label>
             <div class="selectdiv">
                 <select name="payment_method" id="paymentMethod">
+                    @foreach($paymentMethods as $payment)
+                    <option value="{{ $payment->bank_name }}" {{ old('payment_method') == $payment->bank_name ? 'selected' : '' }}>{{ $payment->bank_name }}</option>
+                    @endforeach
+
                     <option value="COD" {{ old('payment_method', 'COD') == 'COD' ? 'selected' : '' }}>Cash On Delivery</option>
                     <option value="kpay" {{ old('payment_method') == 'kpay' ? 'selected' : '' }}>KPay</option>
                     <option value="Paid" {{ old('payment_method') == 'Paid' ? 'selected' : '' }}>Prepaid</option>
@@ -148,7 +155,7 @@
 
         <div class="buttons">
             <button class="btn1" id="continueShopping" type="button">Continue Shopping</button>
-            <button class="btn2" id="checkOut" type="submit">Check Out</button>
+            <button class="btn2" id="checkOut" type="submit">View Cart</button>
         </div>
     </form>
 </div>
@@ -180,39 +187,39 @@
             hiddenTotalPriceInput.value = totalPrice;
         }
 
-        function validateInputs() {
-            let isValid = true;
-            if (!nameInput.value.trim()) {
-                nameInput.classList.add('name-invalid');
-                nameInput.nextElementSibling.innerText = 'Please enter your name.';
-                isValid = false;
-            } else {
-                nameInput.classList.remove('name-invalid');
-                nameInput.nextElementSibling.innerText = '';
-            }
+        // function validateInputs() {
+        //     let isValid = true;
+        //     if (!nameInput.value.trim()) {
+        //         nameInput.classList.add('name-invalid');
+        //         nameInput.nextElementSibling.innerText = 'Please enter your name.';
+        //         isValid = false;
+        //     } else {
+        //         nameInput.classList.remove('name-invalid');
+        //         nameInput.nextElementSibling.innerText = '';
+        //     }
 
-            // Validate Phone
-            if (!phoneInput.value.trim()) {
-                phoneInput.classList.add('phone-invalid');
-                phoneInput.nextElementSibling.innerText = 'Please enter your phone number.';
-                isValid = false;
-            } else {
-                phoneInput.classList.remove('phone-invalid');
-                phoneInput.nextElementSibling.innerText = '';
-            }
+        //     // Validate Phone
+        //     if (!phoneInput.value.trim()) {
+        //         phoneInput.classList.add('phone-invalid');
+        //         phoneInput.nextElementSibling.innerText = 'Please enter your phone number.';
+        //         isValid = false;
+        //     } else {
+        //         phoneInput.classList.remove('phone-invalid');
+        //         phoneInput.nextElementSibling.innerText = '';
+        //     }
 
-            // Validate Address
-            if (!addressInput.value.trim()) {
-                addressInput.classList.add('address-invalid');
-                addressInput.nextElementSibling.innerText = 'Please enter your address.';
-                isValid = false;
-            } else {
-                addressInput.classList.remove('address-invalid');
-                addressInput.nextElementSibling.innerText = '';
-            }
+        //     // Validate Address
+        //     if (!addressInput.value.trim()) {
+        //         addressInput.classList.add('address-invalid');
+        //         addressInput.nextElementSibling.innerText = 'Please enter your address.';
+        //         isValid = false;
+        //     } else {
+        //         addressInput.classList.remove('address-invalid');
+        //         addressInput.nextElementSibling.innerText = '';
+        //     }
 
-            return isValid;
-        }
+        //     return isValid;
+        // }
 
         quantityInputs.forEach(input => {
             input.addEventListener('input', updateTotalPrice);

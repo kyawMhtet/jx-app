@@ -262,6 +262,30 @@ body {
         border: 1px solid #676767;
         transition: all 0.2s;
         font-size: 14px;
+        margin-top: 20px;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      /* border: none; */
+      font-size: 15px;
+      /* border: 1px solid #dddddd; */
+      width: 100%;
+  }
+
+  td,
+  th {
+      /* border: 1px solid #dddddd; */
+      text-align: left;
+      font-weight: 400;
+      padding: 8px;
+  }
+
+    .summary {
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
     }
 
 }

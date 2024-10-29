@@ -65,7 +65,7 @@
 <body>
     <div>
         <i class="fa-solid fa-check"></i>
-        <h3>Order confirmed!</h3>
+        <h3>Order received!</h3>
         <p>Thank you for your purchase.</p>
 
         <button class="btn" onclick="closeBtn()">Close</button>
@@ -98,3 +98,34 @@
     </script>
 </body>
 </html>
+
+<style>
+    .custom-alert {
+        position: relative;
+        padding: 15px;
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        margin: 20px 0;
+    }
+    
+    .custom-alert ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .custom-alert li {
+        list-style: none;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #721c24;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>

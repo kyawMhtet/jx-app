@@ -85,16 +85,19 @@ body {
         border-radius: 8px;
     }
 
-    .photos div {
+    /* .photos div {
         display: grid;
         column-gap: 5px;
         grid-template-columns: auto auto;
-    }
+
+    } */
 
     .photos img {
         width: 100%;
         height: auto;
+        display: flex;
         margin-top: 5px;
+        justify-content: center;
     }
 
     hr {

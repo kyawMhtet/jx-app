@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Shop;
+use App\Models\BankInfo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -28,5 +29,10 @@ class Branch extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function bankInfo() 
+    {
+        return $this->hasMany(BankInfo::class);
     }
 }
