@@ -34,7 +34,7 @@
     </div>
 @endif
     <form id="orderForm" action="{{ route('user#checkout') }}" method="POST">
-
+        @csrf
         <div class="detail">
             <div>
                 <h5>Facebook Name : </h5>
